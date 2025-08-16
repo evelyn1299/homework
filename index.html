@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AR探索校園美術館與AI塔羅對話</title>
+  <meta name="description" content="2025 夏日市集活動報名表單與活動資訊。線上報名、活動卡片、響應式設計與表單驗證。" />
+  <meta property="og:title" content="2025 夏日市集活動報名" />
+  <meta property="og:description" content="線上報名 + 活動資訊，一頁就搞定！" />
+  <meta property="og:type" content="website" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ffd54f'/%3E%3Ctext x='50' y='60' text-anchor='middle' font-size='60'%3E☀%3C/text%3E%3C/svg%3E" />
+  <style>
+    /* ===== CSS Reset（簡化版） ===== */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans TC", sans-serif; line-height: 1.6; color: #222; background: #f7f7f8; }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== Theme ===== */
+    :root {
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #6b7280;
+      --primary: #0ea5e9; /* sky-500 */
+      --primary-600: #0284c7;
+      --ring: rgba(14, 165, 233, 0.35);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(2, 8, 23, 0.08);
+      --border: #e5e7eb;
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#0b0f14; --card:#0f1720; --text:#e5e7eb; --muted:#94a3b8; --border:#1f2937; --shadow: 0 10px 30px rgba(0,0,0,.4);} 
+      body { background: var(--bg); color: var(--text); }
+    }
+
+    /* ===== Layout ===== */
+    .container { width: min(1100px, 92vw); margin: 0 auto; }
+    header.site-header { position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(180%) blur(8px); background: color-mix(in srgb, var(--card) 75%, transparent); border-bottom: 1px solid var(--border); }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 0; }
+    .brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; }
+    .brand .logo { width: 28px; height: 28px; filter: drop-shadow(0 2px 4px rgba(0,0,0,.1)); }
+    .nav a { color: var(--muted); font-weight: 600; }
+    .nav a:hover { color: var(--text); }
+
+    .hero { padding: 56px 0 28px; text-align: center; }
+    .hero h1 { font-size: clamp(28px, 4vw + 8px, 44px); margin: 0 0 8px; }
+    .hero p { color: var(--muted); margin: 0; max-width: 56ch; margin-inline: auto; }
+
+    /* ===== Sections & Cards ===== */
+    .section { padding: 28px 0; }
+    .cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .card { grid-column: span 12; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; display: grid; gap: 6px; transition: transform .18s ease, box-shadow .18s ease; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 16px 35px rgba(2, 8, 23, 0.12); }
+    .card h3 { margin: 0; font-size: 1.1rem; }
+    .card p { margin: 0; color: var(--muted); }
+    @media (min-width: 640px) { .card { grid-column: span 6; } }
+    @media (min-width: 960px) { .card { grid-column: span 4; } }
+
+    /* 固定圖像比例，避免跳動 */
+    .card img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px; }
+
+    /* ===== Demo Box ===== */
+    .demo-wrap { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    .box { background-color: #cfe8ff; padding: 20px 30px; margin: 0; border: 5px solid #1976d2; border-radius: 12px; text-align: center; color: #0b2038; }
+    .fixed-box { width: 100%; max-width: 420px; height: 120px; overflow: auto; margin: 0 auto; }
+
+    /* ===== Form ===== */
+    .form-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; }
+    form { display: grid; gap: 14px; }
+    .grid-2 { display: grid; gap: 12px; grid-template-columns: 1fr; }
+    @media (min-width: 640px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+    label { font-weight: 600; font-size: .95rem; }
+    input, textarea, select { width: 100%; border: 1px solid var(--border); background: transparent; color: inherit; border-radius: 12px; padding: 12px 14px; outline: none; transition: border-color .15s ease, box-shadow .15s ease; }
+    input:focus, textarea:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--ring); }
+    textarea { min-height: 120px; resize: vertical; }
+
+    .helper { font-size: .85rem; color: var(--muted); }
+
+    .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .btn { appearance: none; border: none; cursor: pointer; padding: 12px 16px; border-radius: 999px; font-weight: 700; letter-spacing: .3px; background: linear-gradient(180deg, var(--primary), var(--primary-600)); color: white; box-shadow: 0 8px 20px rgba(14,165,233,.35); }
+    .btn:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+    .btn.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+
+    .success { display: none; margin-top: 10px; padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--success) 16%, transparent); border: 1px solid color-mix(in srgb, var(--success) 50%, transparent); }
+    .success.show { display: block; }
+    .error { color: var(--danger); font-size: .9rem; }
+
+    /* ===== Footer ===== */
+    footer { border-top: 1px solid var(--border); color: var(--muted); padding: 24px 0 40px; text-align: center; }
+
+    /* ===== Utilities ===== */
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .spacer { height: 6px; }
+  </style>
+</head>
+<body>
+  <!-- ===== Header / Nav ===== -->
+  <header class="site-header">
+    <div class="container nav" role="navigation" aria-label="主導覽">
+      <div class="brand">
+        <img class="logo" alt="夏日市集圖示" width="28" height="28" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='%23fde047'/%3E%3Ctext x='50' y='60' text-anchor='middle' font-size='48'%3E☀%3C/text%3E%3C/svg%3E" />
+        <span>2025 夏日市集</span>
+      </div>
+      <div class="links">
+        <a href="#events">活動</a>
+        <span aria-hidden="true">·</span>
+        <a href="#signup">報名</a>
+        <span aria-hidden="true">·</span>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="container">
+      <h1>AR探索校園美術館與AI塔羅對話</h1>
+      <p>情緒 × 藝術 × AR導覽，塔羅與藝術之旅！</p>
+    </div>
+  </section>
+
+  <!-- ===== Upcoming Events ===== -->
+  <section id="events" class="section">
+    <div class="container">
+      <h2>即將舉辦的活動</h2>
+      <div class="spacer"></div>
+      <div class="cards" role="list">
+        <article class="card" role="listitem">
+          <h3>夏日音樂節</h3>
+          <p>7 月 20 日｜台北</p>
+        </article>
+        <article class="card" role="listitem">
+          <h3>手作市集</h3>
+          <p>8 月 5 日｜台中</p>
+        </article>
+        <article class="card" role="listitem">
+          <h3>馬拉松賽</h3>
+          <p>9 月 1 日｜高雄</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Demo: Box Model ===== -->
+  <section class="section">
+    <div class="container">
+      <h2>資訊懶人包！</h2>
+      <div class="spacer"></div>
+      <div class="demo-wrap">
+        <div class="box">
+          內距（padding）是藍色區域和文字之間的距離；邊框（border）是藍色線；外距（margin）是盒子和其他元素的距離。
+        </div>
+        <div class="box fixed-box" aria-label="可滾動內容示範">
+          內距（padding）是藍色區域和文字之間的距離。邊框（border）是藍色線。外距（margin）是盒子和其他元素的距離。<br/>
+          內文較長時會出現捲軸，方便閱讀。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Gallery & Links ===== -->
+  <section class="section">
+    <div class="container">
+      <h2>紀念品 Take away</h2>
+      <div class="spacer"></div>
+      <div class="cards">
+        <figure class="card">
+          <img src="image/杯墊love.png" alt="紀念品示意圖：狐狸情緒杯墊1" width="208" height="284" />
+          <figcaption class="helper">狐狸情緒杯墊1</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="image/杯墊surprise.png" alt="紀念品示意圖：狐狸情緒杯墊2" width="208" height="284" />
+          <figcaption class="helper">狐狸情緒杯墊2</figcaption>
+        </figure>
+        <figure class="card">
+          <img src="image/手機支架鑰匙圈02.png" alt="紀念品示意圖：狐狸鑰匙圈" width="208" height="284" />
+          <figcaption class="helper">狐狸鑰匙圈</figcaption>
+        </figure>
+        <!-- ✅ 新增貼紙卡片 -->
+        <figure class="card">
+          <img src="image/A5圖鑑貼紙.png" alt="NYCU 主題貼紙組" width="208" height="284" />
+          <figcaption class="helper">NYCU 主題貼紙</figcaption>
+        </figure>
+      </div>
+      <p class="helper" style="margin-top:10px">
+        教學資源：
+        <a href="https://www.w3schools.com" target="_blank" rel="noopener noreferrer">W3Schools</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== Signup Form ===== -->
+  <section id="signup" class="section">
+    <div class="container">
+      <h2>購買表單</h2>
+      <div class="spacer"></div>
+      <div class="form-card">
+        <form id="signupForm" novalidate>
+          <div class="grid-2">
+            <div>
+              <label for="name">姓名 <span class="sr-only">（必填）</span></label>
+              <input type="text" id="name" name="name" placeholder="王小明" autocomplete="name" required />
+            </div>
+            <div>
+              <label for="email">電子郵件 <span class="sr-only">（必填）</span></label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email" required />
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div>
+              <label for="phone">聯絡電話 <span class="sr-only">（必填）</span></label>
+              <input type="tel" id="phone" name="phone" placeholder="09xxxxxxxx" autocomplete="tel" inputmode="tel" pattern="^[0-9\-\+\s]{8,}$" required />
+              <div class="helper">可輸入數字、+、- 或空格</div>
+            </div>
+            <div>
+              <label for="event">選購商品</label>
+              <select id="event" name="event">
+                <option value="coaster1">狐狸情緒杯墊1</option>
+                <option value="coaster2">狐狸情緒杯墊2</option>
+                <option value="keyring">狐狸鑰匙圈</option>
+                <!-- ✅ 新增貼紙 -->
+                <option value="sticker">NYCU 貼紙</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="message">備註</label>
+            <textarea id="message" name="message" placeholder="有什麼需要我們協助的嗎？"></textarea>
+          </div>
+
+          <div>
+            <label>
+              <input type="checkbox" id="agree" required /> 我已閱讀並同意活動注意事項
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn">送出報名</button>
+            <button type="reset" class="btn secondary">清除</button>
+          </div>
+
+          <!-- ✅ 商品預覽區 -->
+          <div id="productPreviewWrap" class="helper" style="margin-top:10px">
+            <strong>商品預覽：</strong>
+            <img id="productPreview" alt="商品預覽" style="display:none; margin-top:8px; max-width:220px; border-radius:12px; border:1px solid var(--border)" />
+          </div>
+
+          <p id="formError" class="error" role="alert" aria-live="assertive" hidden></p>
+          <div id="successMessage" class="success" role="status" aria-live="polite">✅ 感謝您的報名！我們已寄送確認信到您的信箱。</div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="section">
+    <div class="container">
+      <h2>常見問題</h2>
+    <details>
+      <summary>報名後如何確認？</summary>
+      <p>送出表單後，頁面會顯示成功訊息，並寄送一封確認信到您的電子郵件。</p>
+    </details>
+    <details>
+      <summary>是否可當天現場報名？</summary>
+      <p>各活動名額有限，建議先線上報名以保留席次。</p>
+    </details>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© 2025 夏日市集活動｜製作良好、效能優化、無障礙加強</div>
+  </footer>
+
+  <!-- ===== Scripts ===== -->
+  <script>
+    (function () {
+      const form    = document.getElementById('signupForm');
+      const success = document.getElementById('successMessage');
+      const errorEl = document.getElementById('formError');
+
+      // 商品預覽設定
+      const productSelect = document.getElementById('event');
+      const previewImg    = document.getElementById('productPreview');
+      const productImages = {
+        coaster1: 'image/杯墊love.png',
+        coaster2: 'image/杯墊surprise.png',
+        keyring:  'image/手機支架鑰匙圈02.png',
+        sticker:  'image/A5圖鑑貼紙.png'  // ✅ 你的貼紙圖
+      };
+
+      function updatePreview() {
+        const val = productSelect.value;
+        const src = productImages[val];
+        if (src) {
+          previewImg.src = src;
+          previewImg.style.display = 'block';
+        } else {
+          previewImg.style.display = 'none';
+        }
+      }
+      // 初始化與選擇變更時更新
+      updatePreview();
+      productSelect.addEventListener('change', updatePreview);
+
+      function showError(msg) {
+        errorEl.textContent = msg;
+        errorEl.hidden = !msg;
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        showError('');
+
+        const fd    = new FormData(form);
+        const name  = (fd.get('name')  || '').toString().trim();
+        const email = (fd.get('email') || '').toString().trim();
+        const phone = (fd.get('phone') || '').toString().trim();
+        const agree = document.getElementById('agree').checked;
+
+        if (!name) return showError('請輸入姓名');
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError('請輸入有效的電子郵件');
+        if (!phone || !/^[0-9\-\+\s]{8,}$/.test(phone)) return showError('請輸入有效的電話');
+        if (!agree) return showError('請先勾選同意活動注意事項');
+
+        // 模擬送出成功
+        success.classList.add('show');
+        form.reset();
+        updatePreview(); // 重設後同步預覽
+        success.focus?.();
+      });
+    })();
+  </script>
+
+  <!-- 若你還有額外的 script.js，可這樣載入（非必須） -->
+  <!-- <script src="script.js" defer></script> -->
+</body>
+</html>
